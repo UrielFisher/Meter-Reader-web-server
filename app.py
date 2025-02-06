@@ -1,22 +1,27 @@
 import os
-from flask import Flask
+import requests
+from flask import Flask, request
 
 app = Flask(__name__)
 
-@app.route('/ocr')
+@app.post('/ocr')
 def getOCR():
   allowed = checkOCRUsage()
-  if(allowed):
-    return '<h1>no OCR</h1>'
-  return getOCRResponse()
+  if allowed:
+    return 'no OCR', 503
+  imageData = request.data
+  if imageData == '':
+    return 'no image data', 400
+  return getOCRResponse(imageData)
 
 
 def checkOCRUsage():
   return True
 
 
-def getOCRResponse():
+def getOCRResponse(imageData):
   api_key = os.environ.get("GCP_API_KEY", False)
-  return 'pass'
+  res = requests.post(f"https://vision.googleapis.com/v1/images:annotate?key={api_key}", data=imageData)
+  return res
 
 app.run(host='0.0.0.0', debug=True)

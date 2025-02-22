@@ -1,5 +1,6 @@
 import os
 import requests
+import json
 from flask import Flask, request
 from flask_cors import CORS
 
@@ -22,12 +23,29 @@ def ocrAllowed():
 
 
 def getOCRResponse(imageData):
-  api_key = os.environ.get("GCP_API_KEY", False)
+  api_key = os.environ.get("GCP_API_KEY", '')
   res = requests.post(
     url=f"https://vision.googleapis.com/v1/images:annotate?key={api_key}",
-    data=imageData,
+    data=ocrBaseRequest(imageData),
     headers={"Content-Type": "application/json"},
   )
   return res.text, res.status_code
+
+
+def ocrBaseRequest(imageData):
+  return json.dumps({
+    "requests": [
+      {
+        "image": {
+          "content": imageData.decode('utf-8')
+        },
+        "features": [
+          {
+            "type": "TEXT_DETECTION"
+          }
+        ]
+      }
+    ]
+  })
 
 app.run(host='0.0.0.0', debug=True)

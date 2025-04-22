@@ -20,7 +20,8 @@ cur.execute('''
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             ownerId INTEGER NOT NULL,
             name TEXT,
-            pstn INTEGER
+            pstn TEXT,
+            paysForSewer BOOLEAN DEFAULT FALSE
 )''')
 
 cur.execute('''

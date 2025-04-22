@@ -8,12 +8,14 @@ app = Blueprint('individual', __name__)
 fields = [
   'ownerId',
   'name',
-  'pstn'
+  'pstn',
+  'paysForSewer'
 ]
 
 @app.get('/')
 def ind():
   with sqlite3.connect('db.db') as conn:
+    conn.row_factory = dict_factory
     cur = conn.cursor()
     res = cur.execute('''
                 SELECT * FROM individuals
@@ -28,7 +30,7 @@ def ind():
 def addIndividual():
   with sqlite3.connect('db.db') as conn:
     cur = conn.cursor()
-    dct = {'name': '', 'pstn': None}
+    dct = {'name': '', 'pstn': None, 'paysForSewer': False}
     dct = {**dct, **request.json}
     dct.update({'ownerId': '1'})
 
@@ -41,7 +43,7 @@ def addIndividual():
       }):
       return 'Individual already exists', 400
     
-    cur.execute('INSERT INTO individuals (ownerId, name) VALUES (:ownerId, :name)',
+    cur.execute('INSERT INTO individuals (ownerId, name, pstn, paysForSewer) VALUES (:ownerId, :name, :pstn, :paysForSewer)',
       dct)
     return 'ok'
   
@@ -64,15 +66,15 @@ def updateIndividual(name):
       }):
       return 'Individual to change not found', 400
     
+    identifiers = [ownerId, name]
     flds = []
     values = []
     for key, value in changes.items():
       flds.append(f'{key} = ?')
       values.append(value)
-    values.append(ownerId)
     
-    cur.execute(f'UPDATE individuals SET {", ".join(flds)} WHERE ownerId = ?',
-                values)
+    cur.execute(f'UPDATE individuals SET {", ".join(flds)} WHERE ownerId = ? AND name = ?',
+                values + identifiers)
     return 'ok', 204
 
 
@@ -104,3 +106,7 @@ def indivExists(attributes):
       return False
     return True
     
+
+def dict_factory(cursor, row):
+  fields = [column[0] for column in cursor.description]
+  return {key: value for key, value in zip(fields, row)}

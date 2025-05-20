@@ -1,6 +1,8 @@
 from flask import Blueprint, request
 import sqlite3
 
+from db_utils import dict_factory, indivExists
+
 app = Blueprint('individuals', __name__)
 
 fields = [
@@ -94,21 +96,3 @@ def deleteIndividual(name):
     cur.execute('DELETE FROM individuals WHERE userId = ? AND name = ?',
                 (1, name))
     return 'ok', 204
-  
-
-def indivExists(attributes):
-  with sqlite3.connect('db.db') as conn:
-    cur = conn.cursor()
-    query = 'SELECT * FROM individuals WHERE'
-    flds = []
-    for att, value in attributes.items():
-      flds.append(f' {att} = "{value}"')
-    print(query+' AND'.join(flds))
-    if(len(cur.execute(query+' AND'.join(flds)).fetchall()) == 0):
-      return False
-    return True
-    
-
-def dict_factory(cursor, row):
-  fields = [column[0] for column in cursor.description]
-  return {key: value for key, value in zip(fields, row)}

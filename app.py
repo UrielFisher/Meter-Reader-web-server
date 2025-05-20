@@ -1,9 +1,9 @@
 from flask import Flask, request
 from flask_cors import CORS
 
-from db_handling import initDB
-from db_handling.individuals import app as individuals
-from db_handling.records import app as records
+from db_routes import initDB
+from db_routes.individuals import app as individuals
+from db_routes.records import app as records
 from readingExtraction import app as extraction
 
 app = Flask(__name__)

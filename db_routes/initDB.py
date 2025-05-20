@@ -6,7 +6,7 @@ cur = conn.cursor()
 
 # cur.execute('DROP TABLE IF EXISTS users')
 # cur.execute('DROP TABLE IF EXISTS individuals')
-cur.execute('DROP TABLE IF EXISTS records')
+# cur.execute('DROP TABLE IF EXISTS records')
 
 cur.execute('''
             CREATE TABLE IF NOT EXISTS users (

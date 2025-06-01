@@ -91,6 +91,6 @@ def editLastRecord():
 
     fldsInDct = [field + ' = :' + field for field in dct.keys() if field in fields]
 
-    cur.execute(f'UPDATE records SET {", ".join(fldsInDct)} WHERE indivId = :indivId AND date = (SELECT MAX(date) FROM records)',
+    cur.execute(f'UPDATE records SET {", ".join(fldsInDct)} WHERE date = (SELECT MAX(date) FROM records WHERE indivId = :indivId)',
                 dct)
     return '', 204

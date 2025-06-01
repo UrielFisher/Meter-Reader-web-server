@@ -24,12 +24,12 @@ def getRawRecords(indivId):
     return res
   
 
-@app.get('/<int:indivId>/lastRecord')
-def getLastRecord(indivId):
+@app.get('/<int:indivId>/indexFromRecent/<int:index>')
+def getLastRecord(indivId, index):
   with sqlite3.connect('db.db') as conn:
     conn.row_factory = dict_factory
     cur = conn.cursor()
-    res = cur.execute('SELECT * FROM records WHERE indivId = ? ORDER BY date DESC LIMIT 1', (indivId,)).fetchone()
+    res = cur.execute('SELECT * FROM records WHERE indivId = ? ORDER BY date DESC LIMIT 1 OFFSET ?', (indivId, index)).fetchone()
     if res:
       return res
     else:
@@ -78,4 +78,19 @@ def addRecord():
       return 'No individual specified', 400
     cur.execute(f'INSERT INTO records ({', '.join(fldsInDct)}) VALUES ({':' + ', :'.join(fldsInDct)})',
                 dct)
-    return 'ok'
+    return '', 204
+  
+
+@app.put('/')
+def editLastRecord():
+  with sqlite3.connect('db.db') as conn:
+    cur = conn.cursor()
+    dct = request.json  
+    if not dct.get('indivId', ''):
+      return 'No individual specified', 400
+
+    fldsInDct = [field + ' = :' + field for field in dct.keys() if field in fields]
+
+    cur.execute(f'UPDATE records SET {", ".join(fldsInDct)} WHERE indivId = :indivId AND date = (SELECT MAX(date) FROM records)',
+                dct)
+    return '', 204

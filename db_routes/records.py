@@ -73,6 +73,8 @@ def addRecord():
   with sqlite3.connect('db.db') as conn:
     cur = conn.cursor()
     dct = request.json
+    if not dct['date']:
+      del dct['date']
     fldsInDct = [field for field in dct.keys() if field in fields]
     if not dct.get('indivId', ''):
       return 'No individual specified', 400

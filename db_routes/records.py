@@ -29,7 +29,7 @@ def getLastRecord(indivId, index):
   with sqlite3.connect('db.db') as conn:
     conn.row_factory = dict_factory
     cur = conn.cursor()
-    res = cur.execute('SELECT * FROM records WHERE indivId = ? ORDER BY date DESC LIMIT 1 OFFSET ?', (indivId, index)).fetchone()
+    res = cur.execute('SELECT * FROM records WHERE indivId = ? ORDER BY date DESC, recordId DESC LIMIT 1 OFFSET ?', (indivId, index)).fetchone()
     if res:
       return res
     else:

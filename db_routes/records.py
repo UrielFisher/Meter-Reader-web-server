@@ -24,12 +24,12 @@ fields = [
 #     return res
   
 
-@app.get('/<int:indivId>/indexFromRecent/<int:index>')
-def getLastRecord(indivId, index):
+@app.get('/<int:indivId>/history')
+def getRecordHistory(indivId):
   with sqlite3.connect('db.db') as conn:
     conn.row_factory = dict_factory
     cur = conn.cursor()
-    res = cur.execute('SELECT * FROM records WHERE indivId = ? ORDER BY date DESC, recordId DESC LIMIT 1 OFFSET ?', (indivId, index)).fetchone()
+    res = cur.execute('SELECT * FROM records WHERE indivId = ? ORDER BY date DESC, recordId DESC LIMIT 5', (indivId,)).fetchall()
     if res:
       return res
     else:
@@ -94,5 +94,5 @@ def editLastRecord():
     fldsInDct = [field + ' = :' + field for field in dct.keys() if field in fields]
 
     cur.execute(f'UPDATE records SET {", ".join(fldsInDct)} WHERE date = (SELECT MAX(date) FROM records WHERE indivId = :indivId)',
-                dct)
+                dct) # ORDER BY recordId DESC LIMIT 1
     return '', 204

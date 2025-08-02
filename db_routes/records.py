@@ -16,12 +16,12 @@ fields = [
 ]
 
 
-@app.get('/<int:indivId>/')
-def getRawRecords(indivId):
-  with sqlite3.connect('db.db') as conn:
-    cur = conn.cursor()
-    res = cur.execute('SELECT * FROM records WHERE indivId = ?', (indivId,)).fetchall()
-    return res
+# @app.get('/<int:indivId>/')
+# def getRawRecords(indivId):
+#   with sqlite3.connect('db.db') as conn:
+#     cur = conn.cursor()
+#     res = cur.execute('SELECT * FROM records WHERE indivId = ?', (indivId,)).fetchall()
+#     return res
   
 
 @app.get('/<int:indivId>/indexFromRecent/<int:index>')

@@ -96,5 +96,5 @@ def editRecord(recordId):
     fldsInDct = [field + ' = :' + field for field in dct.keys() if field in fields]
 
     cur.execute(f'UPDATE records SET {", ".join(fldsInDct)} WHERE indivId = :indivId AND recordId = :recordId',
-                dct) # ORDER BY recordId DESC LIMIT 1
+                dct)
     return '', 204

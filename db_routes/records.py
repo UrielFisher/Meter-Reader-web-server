@@ -83,16 +83,18 @@ def addRecord():
     return '', 204
   
 
-@app.put('/')
-def editLastRecord():
+@app.patch('/<int:recordId>')
+def editRecord(recordId):
   with sqlite3.connect('db.db') as conn:
     cur = conn.cursor()
     dct = request.json  
     if not dct.get('indivId', ''):
       return 'No individual specified', 400
+    
+    dct['recordId'] = recordId
 
     fldsInDct = [field + ' = :' + field for field in dct.keys() if field in fields]
 
-    cur.execute(f'UPDATE records SET {", ".join(fldsInDct)} WHERE date = (SELECT MAX(date) FROM records WHERE indivId = :indivId)',
+    cur.execute(f'UPDATE records SET {", ".join(fldsInDct)} WHERE indivId = :indivId AND recordId = :recordId',
                 dct) # ORDER BY recordId DESC LIMIT 1
     return '', 204

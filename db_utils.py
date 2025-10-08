@@ -2,7 +2,7 @@ import sqlite3
 import json
 
 def indivExists(attributes):
-  with sqlite3.connect('db.db') as conn:
+  with sqlite3.connect('./sqlite_db/db.db') as conn:
     cur = conn.cursor()
     query = 'SELECT * FROM individuals WHERE'
     flds = []

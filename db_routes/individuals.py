@@ -15,7 +15,7 @@ fields = [
 
 @app.get('/')
 def getIndividual():
-  with sqlite3.connect('db.db') as conn:
+  with sqlite3.connect('./sqlite_db/db.db') as conn:
     conn.row_factory = dict_factory
     cur = conn.cursor()
     res = cur.execute('''
@@ -29,7 +29,7 @@ def getIndividual():
 
 @app.post('/')
 def addIndividual():
-  with sqlite3.connect('db.db') as conn:
+  with sqlite3.connect('./sqlite_db/db.db') as conn:
     cur = conn.cursor()
     dct = {'name': '', 'pstn': None, 'paysForSewer': False}
     dct = {**dct, **request.json}
@@ -61,7 +61,7 @@ def updateIndividual(name):
   if not all(field in fields for field in changes):
     return 'Inappropriate field names supplied for change', 400
 
-  with sqlite3.connect('db.db') as conn:
+  with sqlite3.connect('./sqlite_db/db.db') as conn:
     cur = conn.cursor()
 
     if not indivExists({
@@ -86,7 +86,7 @@ def updateIndividual(name):
 def deleteIndividual(name):
   if not name:
     return 'No individual name supplied', 400
-  with sqlite3.connect('db.db') as conn:
+  with sqlite3.connect('./sqlite_db/db.db') as conn:
     if not indivExists({
       'userId': '1',
       'name': name

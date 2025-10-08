@@ -18,7 +18,7 @@ fields = [
 
 # @app.get('/<int:indivId>/')
 # def getRawRecords(indivId):
-#   with sqlite3.connect('db.db') as conn:
+#   with sqlite3.connect('./sqlite_db/db.db') as conn:
 #     cur = conn.cursor()
 #     res = cur.execute('SELECT * FROM records WHERE indivId = ?', (indivId,)).fetchall()
 #     return res
@@ -26,7 +26,7 @@ fields = [
 
 @app.get('/<int:indivId>/history')
 def getRecordHistory(indivId):
-  with sqlite3.connect('db.db') as conn:
+  with sqlite3.connect('./sqlite_db/db.db') as conn:
     conn.row_factory = dict_factory
     cur = conn.cursor()
     res = cur.execute('SELECT * FROM records WHERE indivId = ? ORDER BY date DESC, recordId DESC LIMIT 5', (indivId,)).fetchall()
@@ -38,7 +38,7 @@ def getRecordHistory(indivId):
 
 # @app.get('/<int:indivId>/transformed')
 # def getTransformedRecords(indivId):
-#   with sqlite3.connect('db.db') as conn:
+#   with sqlite3.connect('./sqlite_db/db.db') as conn:
 #     conn.row_factory = dict_factory
 #     cur = conn.cursor()
 #     res = cur.execute('SELECT * FROM records WHERE indivId = ?', (indivId,)).fetchall()
@@ -48,7 +48,7 @@ def getRecordHistory(indivId):
 
 # @app.get('/<int:indivId>/xlsx')
 # def getTransformedRecordsAsXlsx(indivId):
-#   with sqlite3.connect('db.db') as conn:
+#   with sqlite3.connect('./sqlite_db/db.db') as conn:
 #     conn.row_factory = dict_factory
 #     cur = conn.cursor()
 #     res = cur.execute('SELECT * FROM records WHERE indivId = ?', (indivId,)).fetchall()
@@ -63,14 +63,14 @@ def getRecordHistory(indivId):
 # @app.get('/averageChanges/<int:indivId>')
 # def getAverageChanges(indivId):
 #   return
-#   with sqlite3.connect('db.db') as conn:
+#   with sqlite3.connect('./sqlite_db/db.db') as conn:
 #     cur = conn.cursor()
 #     res = cur.execute('')
 
 
 @app.post('/')
 def addRecord():
-  with sqlite3.connect('db.db') as conn:
+  with sqlite3.connect('./sqlite_db/db.db') as conn:
     cur = conn.cursor()
     dct = request.json
     if not dct['date']:
@@ -85,7 +85,7 @@ def addRecord():
 
 @app.patch('/<int:recordId>')
 def editRecord(recordId):
-  with sqlite3.connect('db.db') as conn:
+  with sqlite3.connect('./sqlite_db/db.db') as conn:
     cur = conn.cursor()
     dct = request.json  
     if not dct.get('indivId', ''):

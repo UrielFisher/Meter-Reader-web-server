@@ -15,5 +15,3 @@ app.register_blueprint(blueprint=users, url_prefix='/users')
 app.register_blueprint(blueprint=individuals, url_prefix='/individuals')
 app.register_blueprint(blueprint=records, url_prefix='/records')
 app.register_blueprint(blueprint=extraction, url_prefix='/ocr')
-
-app.run(host='0.0.0.0')

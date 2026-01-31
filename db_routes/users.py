@@ -18,7 +18,7 @@ def getUserSettings():
     conn.row_factory = dict_factory
     cur = conn.cursor()
     res = cur.execute('SELECT settings FROM users WHERE userId = ?', (userId,)).fetchone()
-    return res['settings']
+    return res.get('settings', {})
   
 
 @app.put('/settings')
